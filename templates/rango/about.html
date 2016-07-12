@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rango</title>
+</head>
+<body>
+    <h1>{{ messagefromview }}</h1><br />
+    <a href="/rango">Index</a><br />
+    <img src="{% static '/media/rango.jpg' %}" alt="Rango Image" />
+
+</body>
+</html>
