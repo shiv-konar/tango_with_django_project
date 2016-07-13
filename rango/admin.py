@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Page
+from .models import Category, Page, UserProfile
 # Register your models here.
 
 #To customize the Category model on the /admin site
@@ -15,3 +15,5 @@ class PageAdmin(admin.ModelAdmin):
     list_display = ["title", "category", "url", "views"]
 
 admin.site.register(Page, PageAdmin)
+
+admin.site.register(UserProfile)
