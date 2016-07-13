@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Rango</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block body_block %}
     <h1>Add page to {{ category.name }}</h1>
     {% if category %}
         <form id="page_form" method="post" action="{% url 'add_page' category.slug %}">{% csrf_token %}
@@ -22,5 +18,4 @@
     {% else %}
         <h1> No form</h1>
     {% endif %}
-</body>
-</html>
+{% endblock %}

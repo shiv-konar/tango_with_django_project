@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from .forms import CategoryForm, PageForm, UserForm, UserProfileForm
@@ -7,7 +8,7 @@ from .models import Category, Page
 
 # Create your views here.
 
-
+#@login_required()
 def index(request):
     # Query the database for a list of ALL categories currently stored
     # Order the categories by no. likes in descending order
@@ -24,9 +25,7 @@ def index(request):
 
 
 def about(request):
-    context = {
-        "messagefromview":"You are seeing the about page",
-    }
+    context = {}
     return render(request, 'rango/about.html', context)
 
 
@@ -139,3 +138,14 @@ def user_login(request):
             return HttpResponse("Invalid login details supplied.")
     else:
         return render(request, "rango/login.html", {})
+
+
+@login_required()
+def restricted(request):
+    return render(request, 'rango/restricted.html', {})
+
+
+@login_required()
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect("/rango/")
