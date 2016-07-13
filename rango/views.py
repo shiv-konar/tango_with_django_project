@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Category
+from .models import Category, Page
 
 
 # Create your views here.
@@ -12,8 +12,10 @@ def index(request):
     # Place the list in our context dictionary which will be passed to the template engine
 
     category_list = Category.objects.order_by('-likes')[:5]
+    pages_list = Page.objects.order_by('-views')[:5]
     context = {
-        "categories":category_list
+        "categories":category_list,
+        "pages":pages_list
     }
     return render(request, 'rango/index.html', context)
 
@@ -23,3 +25,22 @@ def about(request):
         "messagefromview":"You are seeing the about page",
     }
     return render(request, 'rango/about.html', context)
+
+
+def category(request, category_name_slug):
+    context = {}
+
+    try:
+        category = Category.objects.get(slug=category_name_slug)
+
+        pages = Page.objects.filter(category = category)
+
+        context = {
+            "category":category,
+            "category_name":category.name,
+            "pages":pages
+        }
+    except Category.DoesNotExist:
+        pass
+
+    return render(request, "rango/category.html", context)

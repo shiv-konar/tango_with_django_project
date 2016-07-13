@@ -12,6 +12,6 @@ admin.site.register(Category, CategoryAdmin) #Important to register both the mod
 
 #To customize the Page model on the /admin site
 class PageAdmin(admin.ModelAdmin):
-    list_display = ["title", "category", "url"]
+    list_display = ["title", "category", "url", "views"]
 
 admin.site.register(Page, PageAdmin)
