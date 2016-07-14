@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from .forms import CategoryForm, PageForm, UserForm, UserProfileForm
@@ -21,11 +22,44 @@ def index(request):
         "categories":category_list,
         "pages":pages_list
     }
-    return render(request, 'rango/index.html', context)
+
+    # GET THE NUMBER OF VISITS TO THE SITE.
+    # WE USE COOKIES.GET() FUNCTION TO OBTAIN THE VISTS COOKIE
+    # IF THE COOKIE EXITS, THE VALUE RETURNED IS CASTED TO AN INTEGER.
+    # IF THE COOKIE DOESN'T EXIST, WE DEFAULT TO ZERO AND CAST THAT.
+
+    visits = request.session.get('visits')
+    if not visits:
+        visits = 1
+    reset_last_visit_time = False
+
+    last_visit = request.session.get("last_visit")
+    if last_visit:
+        last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S" )
+
+        if (datetime.now() - last_visit_time).seconds > 0:
+            visits += 1
+            reset_last_visit_time = True
+    else:
+        reset_last_visit_time = True
+
+    if reset_last_visit_time:
+        request.session['last_visit'] = str(datetime.now())
+        request.session['visits'] = visits
+    context['visits'] = visits
+
+    response = render(request, "rango/index.html", context)
+
+    return response
 
 
 def about(request):
     context = {}
+    if request.session.get('visits'):
+        count = request.session.get('visits')
+    else:
+        count = 0
+    context['visits'] = count
     return render(request, 'rango/about.html', context)
 
 
@@ -87,10 +121,13 @@ def add_page(request, category_name_slug):
     }
     return render(request, "rango/add_page.html", context)
 
-
+'''
 def register(request):
     # A boolean value for telling the template whether the registration was successful.
     # Set to False initially. Code changes value to True when registraion succeeds.
+    if request.session.test_cookie_worked():
+        print ">>> TEST COOKIE WORKED <<<"
+        request.session.delete_test_cookie()
     registered = False
     user_form = UserForm(data=request.POST or None)
     profile_form = UserProfileForm(data=request.POST or None)
@@ -141,11 +178,11 @@ def user_login(request):
 
 
 @login_required()
-def restricted(request):
-    return render(request, 'rango/restricted.html', {})
-
-
-@login_required()
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect("/rango/")
+'''
+
+@login_required()
+def restricted(request):
+    return render(request, 'rango/restricted.html', {})

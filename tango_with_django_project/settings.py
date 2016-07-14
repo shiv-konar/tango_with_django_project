@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'registration',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -130,5 +131,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_DIR = os.path.join(BASE_DIR,'media')
 MEDIAFILES_DIRS = [MEDIA_DIR, ]
 
-
-LOGIN_URL = "/rango/login/"
+REGISTRATION_OPEN = True
+ACCOUNT_ACTIVATION_DAYS = 7
+REGISTRATION_AUTO_LOGIN = True
+LOGIN_REDIRECT_URL = '/rango/'  # The page you want users to arrive after successful login
+LOGIN_URL = "/rango/login/"  # The page users are directed to if they are not logged in
